@@ -1,0 +1,35 @@
+# Pinned to the versions on the trading machine (pip freeze, 2026-11-10): the ones the
+# test suite, the scheduled jobs and the paper broker path are verified against. The
+# earlier pins (pandas 2.1.4, numpy 1.26.4, yfinance 0.2.36 ...) predated the environment
+# this code was adapted to -- forward_test/snapshot.py's vectorised carry-forward exists
+# because pandas 2.3 changed groupby().apply(), and yfinance 0.2.x no longer talks to
+# Yahoo -- so a fresh install from this file built a system that did not match the one
+# that runs. Change a pin here only after the suite passes on the machine with it.
+# tests/test_requirements.py keeps this list equal to what the code imports.
+pandas==2.3.3
+numpy==2.4.3
+yfinance==1.2.0
+requests==2.32.5
+sqlalchemy==2.0.48
+matplotlib==3.10.8       # not imported: pandas needs it for the dashboard's colour gradients
+plotly==6.6.0            # tests/test_charts.py: must equal the requirements-ci.txt pin
+python-dotenv==1.2.2
+loguru==0.7.3
+pytest==9.0.2
+tzdata==2025.3           # not imported: zoneinfo("America/New_York") on Windows (snapshot.py)
+streamlit==1.55.0        # dashboard/app.py
+ib_async==2.1.0          # broker/ibkr_paper.py (IBKR PAPER path)
+scikit-learn==1.8.0      # models/factor_model.py (ML overlay, disabled)
+scipy==1.17.1
+joblib==1.5.3
+anthropic==0.86.0        # agents/sentiment_agent.py (only with an ANTHROPIC_API_KEY)
+finnhub-python==2.4.27   # agents/macro_agent.py, agents/earnings_surprise.py
+fredapi==0.5.2           # agents/economic_agent.py
+beautifulsoup4==4.14.3   # agents/transcript_fetcher.py
+
+# Not listed on purpose: never imported (removed 2026-10-12 and 2026-11-17).
+#   transformers, torch   -- the old FinBERT news layer, replaced by Claude 2026-10-04;
+#                            uninstalled from the trading machine's venv 2026-11-17.
+#   polars, vectorbt, langchain, langgraph, schedule, rich, pydantic, simfin
+#                         -- vectorbt 0.26 does not install on Python 3.12 / numpy 2.
+#   psycopg2-binary       -- only with a PostgreSQL DATABASE_URL; the system runs SQLite.

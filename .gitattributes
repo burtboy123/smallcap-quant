@@ -1,0 +1,14 @@
+# Windows batch and PowerShell files MUST check out with CRLF.
+#
+# cmd.exe mis-parses an LF-only .bat: every `REM` line in forward_test/run_snapshot.bat
+# emitted "'M' is not recognized as an internal or external command" to the wrapper's
+# OWN stderr, which nothing captured -- the log only ever received python's redirected
+# output. Silent parse errors in the job that records the forward test is exactly the
+# class of failure this repo has already been bitten by, so pin the endings rather than
+# relying on core.autocrlf being set the same way on every machine.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Everything else: normalise to LF in the repo, let git decide on checkout.
+* text=auto

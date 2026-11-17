@@ -1,0 +1,83 @@
+{
+  "start": "2026-09-22",
+  "end": "~90 days after start",
+  "benchmark": "SPY",
+  "baseline_mode": "first_close",
+  "_baseline_note": "baselines = each name's close on the first recorded trading day >= start, captured by snapshot.py. Avoids the Q3 intraday/close mismatch that made day 1 read -1.9%.",
+  "calc_date": "2026-09-21",
+  "regime": "RISK_ON_GROWTH",
+  "incumbent_n": 15,
+  "challenger_n": 15,
+  "weighting": "equal-weight (isolates selection, not sizing)",
+  "ml_overlay_enabled": false,
+  "incumbent_construction": {
+    "label": "Incumbent-minus-ML",
+    "f_score_min": 5,
+    "factor_weights": {
+      "value": 0.22,
+      "quality": 0.27,
+      "momentum": 0.16,
+      "sentiment": 0.11,
+      "short_interest": 0.07,
+      "insider": 0.04,
+      "earnings_surprise": 0.03,
+      "proximity_52w": 0.05,
+      "revenue_accel": 0.05
+    },
+    "ranking": "ensemble_rank TIER1(20)+TIER2(10) -> top25 -> top15",
+    "regime_sector_bias": "applied (+/-5)"
+  },
+  "challenger_construction": {
+    "label": "value-tilt (PAPER REFERENCE ONLY \u2014 no capital)",
+    "f_score_min": 3,
+    "weights": {
+      "value": 0.7,
+      "quality": 0.3
+    },
+    "ranking": "direct composite sort",
+    "regime_sector_bias": "off"
+  },
+  "overlap": [
+    "REPX",
+    "SM",
+    "TALO",
+    "TK"
+  ],
+  "baselines_locked": true,
+  "baseline_date": "2026-09-22",
+  "spy_baseline": 774.1799926757812,
+  "incumbent_baselines": {
+    "NUTX": 208.33250427246094,
+    "TALO": 16.385000228881836,
+    "NBR": 83.33000183105469,
+    "HBB": 33.53499984741211,
+    "TK": 13.859999656677246,
+    "SM": 34.36000061035156,
+    "SENEA": 186.36000061035156,
+    "ATNI": 29.790000915527344,
+    "AMN": 34.56999969482422,
+    "MOV": 33.439998626708984,
+    "REPX": 40.97999954223633,
+    "WEYS": 46.13999938964844,
+    "BVS": 13.619999885559082,
+    "INSW": 104.9000015258789,
+    "TNK": 96.41999816894531
+  },
+  "challenger_baselines": {
+    "SM": 34.36000061035156,
+    "NUS": 4.829999923706055,
+    "SSTK": 4.574999809265137,
+    "CABO": 17.684999465942383,
+    "USNA": 14.720000267028809,
+    "CRMD": 7.820000171661377,
+    "YELP": 18.989999771118164,
+    "REPX": 40.97999954223633,
+    "TALO": 16.385000228881836,
+    "MAGN": 12.039999961853027,
+    "NRDS": 8.345000267028809,
+    "TK": 13.859999656677246,
+    "STNE": 9.770000457763672,
+    "KSS": 18.145000457763672,
+    "EBS": 6.78000020980835
+  }
+}

@@ -1,0 +1,35 @@
+# Runs the offline test suite on every push and pull request.
+# Catches a broken change before it reaches main or the machine that trades.
+# No secrets, no network calls in the tests, no broker: PAPER system, nothing placed.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    # Windows too: the trading machine is Windows, and Linux hides Windows-only bugs
+    # (an open SQLite handle locks the file there; it broke every backup on 2026-10-06
+    # while all tests passed on Linux).
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"          # same as the Windows machine
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: pip install -r requirements-ci.txt
+      - name: tests
+        run: >
+          python -m pytest tests/ broker/test_killswitch_trips.py broker/test_book_guard.py
+          -q --no-header -p no:cacheprovider

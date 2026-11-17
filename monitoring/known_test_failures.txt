@@ -1,0 +1,17 @@
+# Known-failing tests, EXCLUDED from the health check's test_suite verdict.
+#
+# Why a baseline exists at all: reporting "16 tests fail" every single day, when the
+# same 16 have failed for weeks, trains you to ignore the alert. Then the seventeenth
+# failure -- the real regression -- arrives inside noise you have learned to skip. So
+# test_suite FAILs only on a NEW failure, and separately WARNs when something in this
+# list starts passing so the baseline gets tightened instead of rotting.
+#
+# THIS LIST IS A DEBT REGISTER, NOT AN EXEMPTION. Every line is a test that should be
+# fixed or deleted. Shorten it; never lengthen it to quieten an alarm.
+#
+# 2026-10-04: emptied. All 16 entries were tests/test_sentiment.py tests written
+# for the removed FinBERT/news agent or with fixtures the quality gates excluded.
+# They were rewritten against the current Claude agent and all pass. (The note
+# that stood here said sentiment does not feed the deployed model; it does --
+# forward_test/2026Q4b/meta.json weights it 0.11 -- which is why it needs tests.) Keep this
+# file empty: a new failure is a regression to fix, not a line to add here.

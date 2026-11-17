@@ -1,0 +1,16 @@
+ticker,composite_score,f_score,sector,adv_usd,weight_equal,book
+SM,78.15963892974833,8,Energy,114955507.09943771,0.0667,incumbent_minus_ml_risk_capped
+TALO,74.03806175449922,6,Energy,27675756.29310608,0.0667,incumbent_minus_ml_risk_capped
+TK,72.93920044354896,7,Energy,6307614.079666138,0.0667,incumbent_minus_ml_risk_capped
+NUTX,71.21544387237574,8,Healthcare,25660115.070343018,0.0667,incumbent_minus_ml_risk_capped
+REPX,70.20622060075952,8,Energy,7014323.759460449,0.0667,incumbent_minus_ml_risk_capped
+AMN,70.20592328237079,7,Healthcare,21974452.65083313,0.0667,incumbent_minus_ml_risk_capped
+BVS,69.43908682993641,8,Healthcare,7731896.128034592,0.0667,incumbent_minus_ml_risk_capped
+SSRM,68.60007963714622,8,Basic Materials,86267141.86124802,0.0667,incumbent_minus_ml_risk_capped
+ADAM,67.83800078023366,7,Real Estate,7468232.069206238,0.0667,incumbent_minus_ml_risk_capped
+MCS,66.16416734203729,8,Communication Services,5759114.0785217285,0.0667,incumbent_minus_ml_risk_capped
+MOV,65.74026873380197,9,Consumer Cyclical,6688518.827819824,0.0667,incumbent_minus_ml_risk_capped
+KODK,65.72633644555373,6,Industrials,6524854.357624054,0.0667,incumbent_minus_ml_risk_capped
+ZVRA,65.61135837333613,7,Healthcare,11435736.294078827,0.0667,incumbent_minus_ml_risk_capped
+MYE,65.17412338561715,8,Consumer Cyclical,11269168.417930603,0.0667,incumbent_minus_ml_risk_capped
+SENEA,65.15251786918799,9,Consumer Defensive,17989387.098693848,0.0667,incumbent_minus_ml_risk_capped

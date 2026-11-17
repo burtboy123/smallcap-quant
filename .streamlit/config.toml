@@ -1,0 +1,8 @@
+# One accent colour for buttons, sliders and links: the validated series blue
+# (dashboard/ui.py SERIES[0]). Streamlit's default red reads as an alarm, and red is
+# reserved for problems. Set per theme so light/dark still follows the system.
+[theme.light]
+primaryColor = "#3987e5"
+
+[theme.dark]
+primaryColor = "#3987e5"

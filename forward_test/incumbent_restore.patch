@@ -1,0 +1,152 @@
+diff --git a/agents/orchestrator.py b/agents/orchestrator.py
+index 43988b5..0eda3b9 100644
+--- a/agents/orchestrator.py
++++ b/agents/orchestrator.py
+@@ -34,8 +34,7 @@ from agents.risk_agent import (
+ from agents.sentiment_agent import analyse_portfolio_sentiment
+ from config.settings import DATABASE_URL, ML_OVERLAY_ENABLED
+ from data.storage import save_portfolio_holdings
+-# ensemble_rank / SCREEN_A / SCREEN_B retained in factors.composite for research,
+-# but the live orchestrator now ranks directly on the value-tilt composite (Option B).
++from factors.composite import ensemble_rank
+ from models.factor_model import predict_scores_for_regime
+ 
+ 
+@@ -190,29 +189,31 @@ def run_monthly_workflow() -> dict:
+ 
+     logger.info(f"Loaded {len(scores)} quality-passing stocks")
+ 
+-    # Regime-aware sector bias (+/-5) is DISABLED in the live ranking path. It is a
+-    # curve-fit-labeled overlay (see docs/regime_rules_validation.md) and would both
+-    # re-import an unvalidated rule and contaminate the parallel value-tilt forward
+-    # test. apply_regime_sector_bias() is retained for research but not applied to
+-    # selection. Ranking uses the pure value-tilt composite only.
+-    # scores = apply_regime_sector_bias(scores, sector_data, regime=current_regime, bias_strength=5.0)
++    # Apply regime-aware sector bias before ranking
++    scores = apply_regime_sector_bias(scores, sector_data, regime=current_regime, bias_strength=5.0)
+ 
++    # ensemble_rank expects passed_quality_gate column; all rows here already passed
+     scores["passed_quality_gate"] = True
+ 
+-    # STEP 3 — Rank directly by the value-dominant composite (0.70V / 0.30Q).
+-    # The two-screen momentum ensemble is RETIRED from the live path: momentum is
+-    # dead at all horizons and two value-dominant screens would make the
+-    # agreement_score / TIER labels vestigial and misleading. ensemble_rank,
+-    # FACTOR_WEIGHTS_SCREEN_A and FACTOR_WEIGHTS_SCREEN_B remain DEFINED for research
+-    # but are no longer used for live selection. composite_score is already the
+-    # 0.70/0.30 value-tilt (see config.settings.FACTOR_WEIGHTS).
+-    logger.info("Step 3/5: Selecting candidates (value-tilt direct ranking)...")
+-    ranked = scores.sort_values("composite_score", ascending=False).reset_index(drop=True)
++    ranked = ensemble_rank(scores)
+     if ranked.empty:
+-        logger.error("no scored stocks to rank — check factor data")
++        logger.error("ensemble_rank returned empty — check factor data")
+         return {}
+-    candidates = ranked.head(25).copy()
+-    candidates["conviction_tier"] = "VALUE_TILT"
++
++    # STEP 3 — Select candidates: TIER1 + TIER2, up to 25
++    logger.info("Step 3/5: Selecting candidates...")
++    tier1 = ranked[ranked["conviction_tier"] == "TIER1_STRONG_BUY"].head(20)
++    tier2 = ranked[ranked["conviction_tier"] == "TIER2_VALUE_BUY"].head(10)
++    candidates = pd.concat([tier1, tier2]).head(25)
++
++    if len(candidates) < 10:
++        logger.warning(f"Only {len(candidates)} TIER1/2 candidates — using top 15 regardless of tier")
++        candidates = ranked.head(15)
++
++    # Attach composite_score from factor scores (ensemble result has score_a/b, not composite_score)
++    score_lookup = scores.set_index("ticker")["composite_score"].to_dict()
++    candidates = candidates.copy()
++    candidates["composite_score"] = candidates["ticker"].map(score_lookup).fillna(0.0)
+ 
+     # Guard: correct any 0.0 or NaN composite scores using underlying factor data
+     for idx, row in candidates.iterrows():
+@@ -243,8 +244,8 @@ def run_monthly_workflow() -> dict:
+         candidates = candidates[candidates["composite_score"] >= MIN_COMPOSITE_SCORE].copy()
+ 
+         already_in = set(candidates["ticker"].tolist())
+-        pool = ranked.copy()  # already carries composite_score (= value-tilt) from scores
+-        pool["composite_score"] = pool["composite_score"].fillna(0.0)
++        pool = ranked.copy()
++        pool["composite_score"] = pool["ticker"].map(score_lookup).fillna(0.0)
+         pool = pool[
+             (~pool["ticker"].isin(already_in)) &
+             (pool["composite_score"] >= MIN_COMPOSITE_SCORE)
+diff --git a/config/settings.py b/config/settings.py
+index 1933ebc..60bc9d9 100644
+--- a/config/settings.py
++++ b/config/settings.py
+@@ -107,23 +107,16 @@ PORTFOLIO = {
+ # Factor Weights (must sum to 1.0)
+ # ---------------------------------------------------------------------------
+ 
+-# Value-dominant (2026-06). Walk-forward audit: VALUE is the one independent,
+-# sign-stable signal (full-universe rank IC +0.124, top-bottom LS +6.78% at 90d);
+-# QUALITY is a modest secondary (largely shared with value); MOMENTUM is dead at
+-# all horizons; SENTIMENT was never stored historically; the 5 aux factors had 0%
+-# historical coverage and were constant-filled (contributing nothing). All non-V/Q
+-# weights set to 0.00 — keys retained so callers referencing them don't break; the
+-# composite builder normalizes by available weight, so this is a clean 0.70/0.30.
+ FACTOR_WEIGHTS = {
+-    "value":              0.70,   # the independent, sign-stable signal carrier
+-    "quality":            0.30,   # modest secondary (mostly shared with value)
+-    "momentum":           0.00,   # DEAD at all horizons (rank IC ~0, sign-unstable)
+-    "sentiment":          0.00,   # never stored historically
+-    "short_interest":     0.00,   # 0% historical coverage, constant-filled
+-    "insider":            0.00,   # 0% historical coverage
+-    "earnings_surprise":  0.00,   # 0% historical coverage
+-    "proximity_52w":      0.00,   # redundant with momentum (rho 0.52)
+-    "revenue_accel":      0.00,   # 0% historical coverage
++    "value":              0.22,   # Core value (EV/EBITDA, P/B, FCF yield)
++    "quality":            0.27,   # Piotroski, ROIC, gross margin
++    "momentum":           0.16,   # 12-1 month price momentum
++    "sentiment":          0.11,   # FinBERT / Claude earnings transcript
++    "short_interest":     0.07,   # Short % of float + MoM change
++    "insider":            0.04,   # Open-market insider buy clusters
++    "earnings_surprise":  0.03,   # Beat rate over last 4 quarters
++    "proximity_52w":      0.05,   # Position in 52-week range
++    "revenue_accel":      0.05,   # Revenue growth acceleration
+ }
+ 
+ # 4-factor weights used when aux signals are unavailable (e.g. backtesting)
+@@ -159,25 +152,20 @@ FACTOR_WEIGHTS_WITH_SENTIMENT = FACTOR_WEIGHTS_BASE
+ # floor was an undocumented May-2026 tightening and has been RETIRED.
+ 
+ QUALITY_GATES = {
+-    "f_score_min":        3,       # LIGHT junk floor (2026-06): drops only the Piotroski 0-2
+-                                   # distress band. The prior f>=5 gate was demoted after a
+-                                   # walk-forward + risk study: f>=5 HALVED the value signal
+-                                   # (full-universe rank IC +0.124 -> +0.047 within gate) AND
+-                                   # was strictly worse on risk (maxDD -17.8% vs -16.0%,
+-                                   # Sharpe 0.64 vs 1.60) — signal destruction with a risk
+-                                   # penalty, not downside protection. f>=3 (over f>=2) is a
+-                                   # deliberate hedge suppressing bankruptcy-band names at a
+-                                   # modest known cost.
+-                                   # 2026-09 UPDATE: this hedge rationale was previously
+-                                   # justified as covering a "survivorship-blind backtest".
+-                                   # That framing is superseded (net survivorship bias is
+-                                   # ~±1%/yr, sign uncertain), but the hedge itself is now
+-                                   # MEASURED-VALID and better targeted than assumed:
+-                                   # unprofitability carries a ~14x bankruptcy gradient, the
+-                                   # strongest driver after size, while cheapness carries only
+-                                   # ~2-4x. A profitability floor is therefore the right
+-                                   # instrument. See docs/survivorship_findings.md.
+-                                   # See docs/regime_rules_validation.md lineage + sandbox studies.
++    "f_score_min":        5,       # INCUMBENT construction (restored 2026-09 after the
++                                   # 2026Q3 forward test chose KEEP INCUMBENT). Corrected
++                                   # 0-9 Piotroski health line. This is the gate the winning
++                                   # book was selected under.
++                                   # NOTE: the f>=3 demotion (bb4a5c4) was reverted on the
++                                   # FORWARD-TEST result, not because the walk-forward study
++                                   # behind f>=3 was wrong. That study still stands on its own
++                                   # terms (f>=5 halved in-gate value IC +0.124 -> +0.047);
++                                   # it was simply outranked by a live head-to-head in which
++                                   # the f>=5 book won and the value thesis went negative.
++                                   # See forward_test/2026Q3_parallel/EVALUATION_RESULT.md,
++                                   # docs/survivorship_findings.md (unprofitability carries a
++                                   # ~14x bankruptcy gradient vs ~2-4x for cheapness),
++                                   # docs/regime_rules_validation.md lineage + sandbox studies.
+     "min_roic":           0.02,    # ROIC > 2%
+     "debt_to_ebitda_max": 5.0,     # exclude highly leveraged
+     "exclude_sectors":    ["Financials", "Utilities"],

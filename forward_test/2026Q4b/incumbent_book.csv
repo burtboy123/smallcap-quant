@@ -1,0 +1,16 @@
+ticker,composite_score,f_score,sector,adv_usd,weight_equal,book
+SM,78.15963892974833,8,Energy,114955507.09943771,0.0667,incumbent_minus_ml
+NUTX,76.21544387237574,8,Healthcare,25660115.070343018,0.0667,incumbent_minus_ml
+AMN,75.20592328237079,7,Healthcare,21974452.65083313,0.0667,incumbent_minus_ml
+BVS,74.43908682993641,8,Healthcare,7731896.128034592,0.0667,incumbent_minus_ml
+TALO,74.03806175449922,6,Energy,27675756.29310608,0.0667,incumbent_minus_ml
+TK,72.93920044354896,7,Energy,6307614.079666138,0.0667,incumbent_minus_ml
+MOV,70.74026873380197,9,Consumer Cyclical,6688518.827819824,0.0667,incumbent_minus_ml
+REPX,70.20622060075952,8,Energy,7014323.759460449,0.0667,incumbent_minus_ml
+MYE,70.17412338561715,8,Consumer Cyclical,11269168.417930603,0.0667,incumbent_minus_ml
+SSRM,68.60007963714622,8,Basic Materials,86267141.86124802,0.0667,incumbent_minus_ml
+CCSI,66.53715207563164,7,Technology,5347341.9580459595,0.0667,incumbent_minus_ml
+CDE,64.04982941231059,8,Basic Materials,579053959.264183,0.0667,incumbent_minus_ml
+GPRE,61.196463131884364,7,Basic Materials,20357546.165657043,0.0667,incumbent_minus_ml
+SENEA,60.15251786918799,9,Consumer Defensive,17989387.098693848,0.0667,incumbent_minus_ml
+KODK,70.72633644555373,6,Industrials,6524854.357624054,0.0667,incumbent_minus_ml

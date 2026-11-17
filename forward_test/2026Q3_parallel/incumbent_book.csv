@@ -1,0 +1,14 @@
+ticker,composite_score,baseline_price_2026_06_17,weight_equal,book
+NATR,89.6051602814699,20.25,0.0769,incumbent_gate_quality
+INSW,91.55590304925724,80.97,0.0769,incumbent_gate_quality
+FLXS,74.82017200938233,64.89,0.0769,incumbent_gate_quality
+APEI,74.35887412040657,53.01,0.0769,incumbent_gate_quality
+MCRI,93.27208756841283,127.96,0.0769,incumbent_gate_quality
+KMT,64.57779515246287,37.17,0.0769,incumbent_gate_quality
+CDE,48.00625488663018,19.23,0.0769,incumbent_gate_quality
+MOV,75.99296325254105,37.71,0.0769,incumbent_gate_quality
+OII,77.09147771696638,36.57,0.0769,incumbent_gate_quality
+IDCC,75.21110242376857,289.36,0.0769,incumbent_gate_quality
+PRDO,77.79906176700548,32.0,0.0769,incumbent_gate_quality
+HRMY,32.67787333854574,34.26,0.0769,incumbent_gate_quality
+UTMD,64.26505082095386,67.25,0.0769,incumbent_gate_quality

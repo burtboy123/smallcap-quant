@@ -1,0 +1,12 @@
+{
+  "start": "2026-06-17",
+  "end": "2026-09-14",
+  "benchmark": "SPY",
+  "spy_baseline": 750.57,
+  "incumbent_n": 13,
+  "challenger_n": 15,
+  "weighting": "equal-weight (isolates selection, not sizing)",
+  "overlap": [
+    "PRDO"
+  ]
+}

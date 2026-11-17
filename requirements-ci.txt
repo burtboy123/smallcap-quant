@@ -1,0 +1,17 @@
+# Minimal set to run the offline test suite in CI (.github/workflows/tests.yml).
+# Deliberately NOT requirements.txt: that adds the broker and agent packages, which no
+# test needs. streamlit is here because tests/test_dashboard_pages.py renders every
+# dashboard page (added 2026-11-17).
+# Every pin equals requirements.txt (the trading machine), so CI tests what runs there:
+# unpinned, CI took the newest pandas/numpy/yfinance while the machine runs older ones,
+# and a pass in CI said nothing about the machine. tests/test_requirements.py checks it.
+pytest==9.0.2
+pandas==2.3.3
+numpy==2.4.3
+loguru==0.7.3
+sqlalchemy==2.0.48
+python-dotenv==1.2.2
+yfinance==1.2.0
+tzdata==2025.3
+plotly==6.6.0
+streamlit==1.55.0

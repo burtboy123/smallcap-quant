@@ -1,0 +1,16 @@
+ticker,composite_score,f_score,sector,weight_equal,book
+SM,93.2565026755423,8,Energy,0.0667,challenger_value_tilt_paper_reference
+NUS,90.6399559267521,6,Consumer Defensive,0.0667,challenger_value_tilt_paper_reference
+SSTK,90.08301702120994,4,Communication Services,0.0667,challenger_value_tilt_paper_reference
+CABO,88.4652149704257,4,Communication Services,0.0667,challenger_value_tilt_paper_reference
+USNA,87.84128386047955,5,Consumer Defensive,0.0667,challenger_value_tilt_paper_reference
+CRMD,87.60113247208886,5,Healthcare,0.0667,challenger_value_tilt_paper_reference
+YELP,87.5595662536047,7,Communication Services,0.0667,challenger_value_tilt_paper_reference
+REPX,86.49012664079906,8,Energy,0.0667,challenger_value_tilt_paper_reference
+TALO,86.05846932681797,6,Energy,0.0667,challenger_value_tilt_paper_reference
+MAGN,85.83817922422219,5,Consumer Defensive,0.0667,challenger_value_tilt_paper_reference
+NRDS,85.41566278938933,8,Communication Services,0.0667,challenger_value_tilt_paper_reference
+TK,84.79534284308049,7,Energy,0.0667,challenger_value_tilt_paper_reference
+STNE,84.70757340493678,6,Technology,0.0667,challenger_value_tilt_paper_reference
+KSS,83.60146816703868,7,Consumer Cyclical,0.0667,challenger_value_tilt_paper_reference
+EBS,83.33448457230004,7,Healthcare,0.0667,challenger_value_tilt_paper_reference

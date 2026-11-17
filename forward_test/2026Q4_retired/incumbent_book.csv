@@ -1,0 +1,16 @@
+ticker,composite_score,f_score,sector,weight_equal,book
+NUTX,76.21544387237574,8,Healthcare,0.0667,incumbent_minus_ml
+TALO,74.03806175449922,6,Energy,0.0667,incumbent_minus_ml
+NBR,69.98313859661368,8,Energy,0.0667,incumbent_minus_ml
+HBB,71.49018911530924,7,Consumer Cyclical,0.0667,incumbent_minus_ml
+TK,72.93920044354896,7,Energy,0.0667,incumbent_minus_ml
+SM,78.15963892974833,8,Energy,0.0667,incumbent_minus_ml
+SENEA,60.15251786918799,9,Consumer Defensive,0.0667,incumbent_minus_ml
+ATNI,68.92570295364857,6,Communication Services,0.0667,incumbent_minus_ml
+AMN,75.20592328237079,7,Healthcare,0.0667,incumbent_minus_ml
+MOV,70.74026873380197,9,Consumer Cyclical,0.0667,incumbent_minus_ml
+REPX,70.20622060075952,8,Energy,0.0667,incumbent_minus_ml
+WEYS,72.7143470127977,8,Consumer Cyclical,0.0667,incumbent_minus_ml
+BVS,74.43908682993641,8,Healthcare,0.0667,incumbent_minus_ml
+INSW,64.74621736339267,6,Energy,0.0667,incumbent_minus_ml
+TNK,69.92982689237265,6,Energy,0.0667,incumbent_minus_ml
